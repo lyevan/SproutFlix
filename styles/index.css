@@ -1,3 +1,5 @@
+@import url("./movie-card.css");
+
 :root {
   /* Colors */
   --primary: #397234;
@@ -38,6 +40,8 @@ body {
   font-family: var(--font-body);
   background-color: var(--background-1);
   color: var(--primary-content);
+  width: 100vw;
+  height: 100vh;
 }
 
 /* Buttons */
@@ -47,13 +51,13 @@ body {
   border-radius: 5px;
   font-family: var(--font-heading);
   padding: var(--sm) var(--md);
+  cursor: pointer;
 }
 
 .btn-primary {
   background-color: var(--primary);
   color: var(--primary-content);
-  &:hover,
-  &:focus {
+  &:hover {
     background-color: var(--primary-hover);
   }
 }
@@ -111,32 +115,17 @@ body {
   color: var(--accent);
 }
 
-/* Movie Card */
+.popular-movies {
+  width: 100%;
+}
 
-.movie-card {
-  background-color: var(--background-card);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 100px;
-  border-radius: 5px;
-  height: auto;
-  position: absolute;
-  img {
-    border-radius: 5px;
-    width: 100%;
-    height: auto;
-  }
-  div {
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-  }
-  h2 {
-    font-size: 0.5rem;
-  }
-  p {
-    font-size: 0.875rem;
-  }
+.popular-movies-list {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  overflow: auto;
+  gap: var(--md);
+  padding: var(--md);
+  justify-content: start;
+  align-items: center;
 }
