@@ -1,6 +1,6 @@
 .movie-card {
-  background-color: var(--background-card);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
   width: 150px;
   height: auto;
   position: relative;
@@ -48,17 +48,17 @@
 
   .movie-title-container {
     position: absolute;
-    width: 100%;
-    padding: var(--sm);
-    color: var(--primary-content);
+    bottom: 2%;
+    z-index: 2;
+    width: 60%;
+    height: 1.4rem;
     display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: start;
-    height: 4rem;
+    justify-content: center;
+    align-items: center;
   }
   h2 {
-    font-size: 0.6rem;
+    font-family: "Winky Sans", sans-serif;
+    font-size: 0.65rem;
     display: -webkit-box;
     line-clamp: 2;
     -webkit-line-clamp: 2;
@@ -66,6 +66,15 @@
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: 1.2;
+  }
+  .movie-year {
+    font-family: "Winky Sans", sans-serif;
+    position: absolute;
+    bottom: 13%;
+    right: 5%;
+    font-size: 0.6rem;
+    color: var(--primary-content);
+    margin-top: 0.5rem;
   }
 }
 

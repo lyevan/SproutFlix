@@ -20,6 +20,10 @@ await fetchPopularMovies()
         </div>
         <img src="../assets/pot-foreground.png" class="pot-foreground" />
         <img src="../assets/leaf.png" class="leaf-frame" />
+        <div class="movie-title-container">
+          <h2 class="movie-title">${movieTitle}</h2>
+        </div>
+        <h1 class="movie-year">${movieYear}</h1>
     `;
       movieContainer.appendChild(movieCard);
     });
