@@ -27,7 +27,7 @@
   --5xl: 5rem;
   /* Fonts */
   --font-heading: "Poppins", sans-serif;
-  --font-body: "Winky Sans", sans-serif;
+  --font-body: "Inter", sans-serif;
 }
 
 * {
@@ -40,8 +40,8 @@ body {
   font-family: var(--font-body);
   background-color: var(--background-1);
   color: var(--primary-content);
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
 }
 
 /* Buttons */
@@ -119,40 +119,73 @@ body {
   color: var(--accent);
 }
 
-.popular-movies {
+.popular-movies,
+.popular-series {
   width: 100%;
+  height: fit-content;
+  margin-bottom: 2rem;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: start;
   justify-content: center;
   position: relative;
-  background-image: url("../assets/soil.jpg");
+  padding-left: 1rem;
+  /* background-image: url("../assets/soil.jpg");
   background-size: cover;
-  background-position: center;
+  background-position: top;
   background-repeat: no-repeat;
   background-color: rgba(0, 0, 0, 0.7);
-  background-blend-mode: overlay;
-
+  background-blend-mode: overlay; */
   .featured-header {
-    font-size: var(--xl);
+    font-size: var(--lg);
+    height: 3rem;
     font-weight: bold;
     color: var(--primary-content);
     text-align: center;
+    display: flex;
+    align-items: center;
   }
-}
+  .btn-swipe {
+    transition: all 0.3s ease-in-out;
+    opacity: 0;
+    position: absolute;
 
-.popular-movies-list {
-  display: flex;
-  width: 100%;
-  height: 250px;
-  flex-direction: row;
-  overflow: auto;
-  gap: var(--md);
-  justify-content: start;
-  align-items: center;
-  position: relative;
+    z-index: 25;
+    background-color: rgba(0, 0, 0, 0);
+    border-radius: 8px;
+    border: none;
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 1.5rem;
+    padding: var(--sm);
+    height: calc(100% - 3rem);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.15);
+      color: rgba(255, 255, 255, 0.5);
+    }
+  }
+
+  &:hover .btn-swipe {
+    opacity: 1;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .btn-swipe-r {
+    right: 0;
+    top: calc(50% + 1.5rem);
+    transform: translateY(-50%);
+  }
+  .btn-swipe-l {
+    left: 1rem;
+    top: calc(50% + 1.5rem);
+    transform: translateY(-50%);
+  }
+
   .swipe-overlay {
-    position: fixed;
-    height: inherit;
+    position: absolute;
+    top: calc(3rem + 10px);
+    height: 180px;
     width: 100px;
     content: "";
     right: 0;
@@ -163,5 +196,281 @@ body {
       rgba(0, 0, 0, 0) 0%,
       rgba(0, 0, 0, 1) 100%
     );
+  }
+}
+
+.popular-movies-list,
+.popular-series-list {
+  display: flex;
+  width: 100%;
+  height: 200px;
+  flex-direction: row;
+  overflow: auto;
+  gap: var(--md);
+  justify-content: start;
+  align-items: center;
+  position: relative;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scroll-snap-align: start;
+
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.skeleton {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  animation: pulse 1.5s infinite;
+}
+
+/* Skeleton Loading Styles */
+.skeleton-card {
+  pointer-events: none;
+  cursor: default;
+}
+
+.skeleton-poster {
+  background: linear-gradient(
+    90deg,
+    var(--background-2) 25%,
+    var(--background-3) 50%,
+    var(--background-2) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+  height: 180px;
+}
+
+.skeleton-title {
+  background: linear-gradient(
+    90deg,
+    var(--background-2) 25%,
+    var(--background-3) 50%,
+    var(--background-2) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  height: 1rem;
+  border-radius: 4px;
+  margin: 0.25rem;
+}
+
+.skeleton-type {
+  background: linear-gradient(
+    90deg,
+    var(--background-2) 25%,
+    var(--background-3) 50%,
+    var(--background-2) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  height: 1.5rem;
+  width: 3rem;
+  border-radius: 4px;
+  position: absolute;
+  top: 0.5rem;
+  right: 10%;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.card {
+  pointer-events: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+
+  width: 120px;
+  height: 180px;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+nav {
+  width: 100%;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--background-2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.trending-movies {
+  width: 100%;
+  display: flex;
+  height: 720px;
+  justify-content: center;
+}
+
+/* Image loading optimizations */
+.current-trending-container {
+  width: 100%;
+  height: 720px;
+  box-sizing: border-box;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  will-change: background-image;
+}
+
+.current-trending {
+  width: 100%;
+  height: 720px;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+  gap: var(--md);
+  background-color: rgba(0, 0, 0, 0.6);
+  background-blend-mode: overlay;
+  background-position: top;
+  text-align: center;
+  padding: var(--5xl);
+
+  .current-trending-info-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--md);
+  }
+
+  .current-trending-overview {
+    height: 200px;
+    max-height: 200px;
+    overflow: auto;
+  }
+
+  .current-trending-logo {
+    object-fit: contain;
+    max-width: 30rem;
+    max-height: 20rem;
+  }
+
+  .current-trending-badges {
+    display: flex;
+    gap: var(--md);
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: start;
+  }
+
+  .current-trending-media-type {
+    font-family: "Inter", sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 1);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .current-trending-runtime, .current-trending-seasons {
+    font-family: "Inter", sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 1);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    background-color: var(--primary);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .current-trending-year {
+    font-family: "Inter", sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    background-color: var(--secondary);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .current-trending-votes {
+    font-family: "Inter", sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    background-color: var(--accent);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .current-trending-media-info {
+    display: flex;
+    width: 100%;
+    gap: var(--md);
+    justify-content: space-between;
+    align-items: start;
+    flex-wrap: wrap;
+  }
+
+  .current-trending-overview {
+    font-family: "Inter", sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--primary-content);
+    max-width: 50ch;
+    text-align: justify;
+    line-height: 1.5;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+  }
+
+  h1 {
+    font-family: "Poppins", sans-serif;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--primary-content);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  }
+}
+.show-poster,
+.current-trending-logo {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+@media screen and (min-width: 1441px) {
+  .popular-movies-list,
+  .popular-series-list {
+    height: 300px;
+  }
+
+  .card {
+    width: 200px;
+    height: 300px;
   }
 }

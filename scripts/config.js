@@ -1,7 +1,15 @@
 export const CONFIG = {
-  BASE_URL: "https://api.themoviedb.org/3",
+  BASE_URL: "https://incy-tmdb-api.vercel.app/api/v1",
   IMG_BASE_URL: "https://image.tmdb.org/t/p/w500",
-  API_KEY: "a0086b82f62caa3965ce2e8d848e2f5b",
-  API_ACCESS_TOKEN:
-    "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhMDA4NmI4MmY2MmNhYTM5NjVjZTJlOGQ4NDhlMmY1YiIsIm5iZiI6MTc1MzUxODQwMC4wMTQwMDAyLCJzdWIiOiI2ODg0OTE0MDJlNDg5NDdhZGZmNzg2NTMiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.tSXT-ZffGDcf8YGq_57AROWNnCV7rdNVJrNdDEAI9_s",
+  HIGH_IMG_BASE_URL: "https://image.tmdb.org/t/p/original",
+
+  getImage: (path) => {
+    return `${CONFIG.IMG_BASE_URL}${path}`;
+  },
+  getBackdrop: (path) => {
+    return `${CONFIG.HIGH_IMG_BASE_URL}${path}`;
+  },
+  getLogo: (path) => {
+    return `${CONFIG.HIGH_IMG_BASE_URL}${path}`;
+  },
 };
