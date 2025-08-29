@@ -34,9 +34,9 @@ const loadShowData = async () => {
 
 // Generate embed URL
 if (showType === "movie") {
-  embedUrl = `https://vidsrc.to/embed/movie/${showId}`;
+  embedUrl = `https://vidsrc.xyz/embed/movie?tmdb=${showId}&ds_lang=en`;
 } else {
-  embedUrl = `https://vidsrc.to/embed/tv/${showId}/${season}/${episode}`;
+  embedUrl = `https://vidsrc.xyz/embed/tv?tmdb=${showId}&season=${season}&episode=${episode}&ds_lang=en`;
 }
 
 // Create skeleton episode cards
@@ -70,16 +70,15 @@ const createPlayerInterface = async () => {
         <i class="fas fa-arrow-left"></i> Back to Home
       </a>
     </div>
-    
-    <div class="player-wrapper">
+      <div class="player-wrapper">
       <iframe
         src="${embedUrl}"
         width="100%"
         height="100%"
         frameborder="0"
         allowfullscreen
-        autoplay
-        allow="autoplay; fullscreen"
+        allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+        loading="lazy"
       ></iframe>
     </div>
     
