@@ -1,0 +1,247 @@
+.trending-movies {
+  height: calc(100vh - 4rem);
+  position: relative;
+}
+
+.trending-movies .trending-list .trending-item {
+  position: absolute;
+  inset: 0 0 0 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: 0.5s;
+}
+
+.trending-movies .trending-list .trending-item .trending-backdrop {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.trending-movies .trending-list .trending-item::after {
+  content: " ";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  background-image: linear-gradient(to top, #000 20%, transparent);
+}
+
+.trending-movies .trending-list .trending-info {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  left: 10%;
+  top: 10%;
+  width: 500px;
+  max-width: 80%;
+  z-index: 1;
+}
+
+.trending-movies .trending-list .trending-info .trending-logo {
+  width: 200px;
+  max-width: 100%;
+  height: auto;
+  max-height: 200px;
+  margin-bottom: var(--md);
+}
+
+.trending-movies .trending-list .trending-item.active {
+  opacity: 1;
+  z-index: 10;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.watch-button {
+  background-color: var(--primary);
+  border: none;
+  color: #191919;
+  text-transform: uppercase;
+  font-weight: 600;
+  width: 120px;
+  height: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.later-button {
+  background-color: var(--foreground);
+  border: 2px solid var(--primary);
+  color: #191919;
+  text-transform: uppercase;
+  font-weight: 600;
+  width: 120px;
+  height: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+@keyframes showContent {
+  to {
+    transform: translateY(0);
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+.trending-movies
+  .trending-list
+  .trending-item.active
+  .trending-info
+  .trending-logo,
+.trending-movies
+  .trending-list
+  .trending-item.active
+  .trending-info
+  .trending-overview,
+.trending-movies
+  .trending-list
+  .trending-item.active
+  .trending-info
+  .action-buttons {
+  transform: translateY(30px);
+  filter: blur(20px);
+  opacity: 0;
+  animation: showContent 0.5s 0.7s ease-in-out 1 forwards;
+}
+
+.trending-movies
+  .trending-list
+  .trending-item.active
+  .trending-info
+  .trending-logo {
+  animation-delay: 1s;
+}
+
+.arrows {
+  position: absolute;
+  top: 30%;
+  right: 50px;
+  z-index: 100;
+}
+
+.arrows button {
+  width: 40px;
+  height: 40px;
+  background-color: transparent;
+  border: 2px solid var(--primary);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  i {
+    color: var(--primary);
+  }
+}
+
+.arrows button:hover {
+  background-color: var(--primary);
+  i {
+    color: var(--primary-content);
+  }
+}
+
+.thumbnail {
+  position: absolute;
+  bottom: 50px;
+  z-index: 11;
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  height: 250px;
+  padding: 0 50px;
+  box-sizing: border-box;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.thumbnail::-webkit-scrollbar {
+  width: 0;
+}
+
+.thumbnail .thumbnail-item {
+  width: 150px;
+  filter: brightness(0.3) grayscale(1);
+  transition: 0.5s;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.thumbnail .thumbnail-item .thumbnail-poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.thumbnail .thumbnail-item.active {
+  filter: brightness(1) grayscale(0);
+}
+
+.thumbnail .thumbnail-item .thumbnail-info {
+  display: none;
+  font-size: smaller;
+  width: 100%;
+  position: absolute;
+  inset: auto 10px 10px 10px;
+}
+
+.action-buttons {
+  width: 100%;
+}
+
+.watch-button,
+.later-button {
+  flex: 1;
+}
+
+/* If there is no available logo then style the alt text */
+.trending-movies .trending-list .trending-info .trending-logo[alt]:empty {
+  content: attr(alt);
+  color: var(--foreground);
+  font-size: xxx-large;
+}
+
+@media screen and (max-width: 678px) {
+  .arrows {
+    top: 48%;
+  }
+  .trending-movies .trending-list .trending-info {
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: smaller;
+    align-items: center;
+  }
+
+  .action-buttons {
+    width: 100%;
+  }
+
+  .watch-button,
+  .later-button {
+    flex: 1;
+    height: 35px;
+    font-size: smaller;
+  }
+
+  .trending-movies .trending-list .trending-info .trending-logo {
+    width: 180px;
+  }
+}
+
+/* Larger screens */
+@media screen and (min-width: 1450px) {
+  .trending-movies .trending-list .trending-info {
+    width: 600px;
+  }
+  .trending-movies .trending-list .trending-info .trending-logo {
+    width: auto;
+    max-height: 400px;
+  }
+}

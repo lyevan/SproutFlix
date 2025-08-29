@@ -108,11 +108,9 @@
     border-radius: 4px;
     position: absolute;
     padding: 2px 4px;
-    color: #000;
     top: 0;
     right: 10%;
     font-size: 0.6rem;
-
     margin-top: 0.5rem;
   }
 }

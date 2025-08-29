@@ -30,3 +30,21 @@ document.querySelectorAll("#movie-card").forEach((card) => {
     window.location.href = `../pages/movie.html?id=${movieId}`;
   });
 });
+
+export const searchShows = async (query, page = 1) => {
+  if (!query) {
+    throw new Error("Search query is required.");
+  }
+
+  const response = await fetch(
+    `${CONFIG.BASE_URL}/discover/search?query=${encodeURIComponent(
+      query
+    )}&page=${page}`
+  );
+  if (!response.ok) {
+    throw new Error(`Error searching shows: ${response.statusText}`);
+  }
+  const data = await response.json();
+  console.log("Search results:", data);
+  return data;
+};

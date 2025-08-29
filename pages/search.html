@@ -18,32 +18,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../styles/index.css" />
-    <title>SproutFlix Watch</title>
+    <title>SproutFlix Search</title>
   </head>
   <body>
-    <div class="dialog-wrapper" id="dialog-wrapper">
-      <dialog open>
-        <div>
-          <h1>
-            <i class="fas fa-exclamation-triangle"></i> Disclaimer
-            <i class="fas fa-exclamation-triangle"></i>
-          </h1>
-          <p style="color: lightcoral; margin-bottom: 10px; font-weight: bold">
-            Playing videos contain <span style="color: crimson">ADS</span> as
-            these videos are embedded only from a public source.
-          </p>
-          <p>
-            If a pop-up appears or a new tab opens, please
-            <b style="color: lightcoral">close</b> it immediately. Enjoy!
-          </p>
-          <div class="dialog-actions">
-            <button class="dialog-close" id="dialog-close-button">
-              <i class="fas fa-check"></i> I Understand
-            </button>
-          </div>
-        </div>
-      </dialog>
-    </div>
     <nav>
       <a class="logo" href="../index.html">
         <img src="../assets/images/logo.png" alt="SproutFlix Logo" />
@@ -66,7 +43,36 @@
     </nav>
 
     <main>
-      <div id="movie-player-wrapper"></div>
+      <div class="search-page-container">
+        <div class="search-header">
+          <h1 id="search-title">Search Results</h1>
+          <p id="search-subtitle">
+            Enter a search term to find movies and TV shows
+          </p>
+        </div>
+
+        <div class="search-results-container">
+          <div id="search-results" class="search-results-grid"></div>
+          <div id="search-loading" class="search-loading hidden">
+            <i class="fas fa-spinner"></i>
+            <p>Searching...</p>
+          </div>
+          <div id="search-error" class="search-error hidden">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>Something went wrong. Please try again.</p>
+          </div>
+          <div id="no-results" class="no-results hidden">
+            <i class="fas fa-search"></i>
+            <p>No results found. Try a different search term.</p>
+          </div>
+        </div>
+
+        <div id="load-more-container" class="load-more-container hidden">
+          <button id="load-more-btn" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Load More
+          </button>
+        </div>
+      </div>
     </main>
 
     <footer>
@@ -139,6 +145,6 @@
       </div>
     </footer>
 
-    <script type="module" src="../scripts/show.js"></script>
+    <script type="module" src="../scripts/search.js"></script>
   </body>
 </html>

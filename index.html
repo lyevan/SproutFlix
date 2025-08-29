@@ -21,22 +21,150 @@
     <title>SproutFlix</title>
   </head>
   <body>
-    <nav>Logo HERE</nav>
-    <section class="trending-movies" id="trending-movies"></section>
-    <section id="popular-movies" class="popular-movies text-primary-content">
-      <div class="dim-overlay"></div>
-      <div class="featured-header">Featured Sprouts</div>
-      <div class="swipe-overlay"></div>
-      <div id="popular-movies-list" class="popular-movies-list"></div>
-      <button class="btn-swipe btn-swipe-r">
-        <i class="fas fa-chevron-right"></i>
-      </button>
-      <button class="btn-swipe btn-swipe-l">
-        <i class="fas fa-chevron-left"></i>
-      </button>
-    </section>
+    <div class="dialog-wrapper" id="dialog-wrapper">
+      <dialog open>
+        <div>
+          <h1>
+            <i class="fas fa-exclamation-triangle"></i> Disclaimer
+            <i class="fas fa-exclamation-triangle"></i>
+          </h1>
+          <p>
+            This website is a personal project and is not affiliated with or
+            endorsed by any official movie or TV show production companies. All
+            content displayed on this site is for the
+            <strong style="color: lightcoral">CodeSprout 2025 Hackathon</strong>
+            only. The movies and TV shows featured here are sourced from
+            <strong style="color: lightcoral">public APIs</strong>
+            and do not host any copyrighted material. Please support the
+            original creators by watching their content through legitimate
+            channels.
+          </p>
 
-    <button class="btn btn-primary">Yeah</button>
+          <p>
+            Also note that some content may be rated for mature audiences.
+            Viewer discretion is advised.
+          </p>
+
+          <strong style="color: lightcoral">
+            Playing videos contain <span style="color: crimson">ADS</span> as
+            these videos are embedded only from a public source.
+          </strong>
+          <div class="dialog-actions">
+            <button class="dialog-close" id="dialog-close-button">
+              <i class="fas fa-check"></i> I Understand
+            </button>
+          </div>
+        </div>
+      </dialog>
+    </div>
+    <nav>
+      <a class="logo" href="./index.html">
+        <img src="./assets/images/logo.png" alt="SproutFlix Logo" />
+        <h1 id="logo-title">SproutFlix</h1>
+      </a>
+
+      <div class="search-container">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search for movies or TV shows..."
+        />
+        <button id="search-button-pc" class="pc-search">
+          <i class="fas fa-search"></i>
+        </button>
+        <button id="search-button-mobile" class="mobile-search">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </nav>
+    <main>
+      <section
+        class="trending-movies"
+        id="trending-movies"
+        style="position: relative"
+      >
+        <div class="trending-list"></div>
+        <div class="arrows" style="display: none">
+          <button id="prev"><i class="fas fa-chevron-left"></i></button>
+          <button id="next"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="thumbnail"></div>
+        <div class="scroll-down-hint">
+          Curious About Me? Scroll Down
+          <i class="fas fa-chevron-down bounce-animation"></i>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-container">
+        <div class="footer-brand">
+          <a href="./index.html" class="footer-logo">
+            <img src="./assets/images/logo.png" alt="SproutFlix Logo" />
+            <h2>SproutFlix</h2>
+          </a>
+          <p class="footer-tagline">
+            Your streaming companion for the CodeSprout 2025 Hackathon. Discover
+            and enjoy movies and TV shows with a plant-themed twist! 🌱
+          </p>
+          <div class="footer-social">
+            <a href="#" class="social-link" title="GitHub">
+              <i class="fab fa-github"></i>
+            </a>
+            <a href="#" class="social-link" title="LinkedIn">
+              <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="#" class="social-link" title="Twitter">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-info">
+          <div class="footer-contact">
+            <h3>
+              <i class="fas fa-user-circle"></i>
+              Contact Developer
+            </h3>
+            <div class="contact-item">
+              <i class="fas fa-code"></i>
+              <span>IncygniaCodes</span>
+            </div>
+            <div class="contact-item">
+              <i class="fas fa-envelope"></i>
+              <a href="mailto:samelmido22@gmail.com">samelmido22@gmail.com</a>
+            </div>
+          </div>
+
+          <div class="footer-disclaimer">
+            <h3>
+              <i class="fas fa-exclamation-triangle"></i>
+              Disclaimer
+            </h3>
+            <p>
+              This website is a personal project for the
+              <span class="highlight">CodeSprout 2025 Hackathon</span>. We do
+              not own any copyrighted material displayed here.
+            </p>
+            <p>
+              All content is sourced from public APIs and embedded from external
+              sources. Please support original creators through legitimate
+              channels.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-copyright">
+          <i class="fas fa-seedling"></i>
+          <span
+            >© 2025 SproutFlix by IncygniaCodes. Made for CodeSprout
+            Hackathon.</span
+          >
+        </div>
+      </div>
+    </footer>
   </body>
   <script type="module" src="./scripts/index.js"></script>
 </html>

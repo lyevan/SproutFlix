@@ -1,52 +1,6 @@
 import { fetchTrendingShows, fetchShowInfo } from "./utils/fetchAPI.js";
 import { CONFIG } from "./config.js";
 
-const renderShowCard = (show) => {
-  const showCard = document.createElement("div");
-  showCard.setAttribute("data-movie-id", show.id);
-  showCard.className = "show-card";
-  showCard.innerHTML = `
-
-        <div class="show-poster-container">
-          
-          <img src="${CONFIG.getImage(show.poster_path)}" alt="${
-    show.title
-  }" class="show-poster"/>
-
-        </div>
-        <div class="show-title-container">
-          <h2 class="show-title">${show.title || show.name}</h2>
-        </div>
-        <h1 class="show-type" style="${
-          show.media_type === "movie"
-            ? "background: var(--accent);"
-            : "background: var(--secondary);"
-        }">${show.media_type === "movie" ? "Movie" : "TV"}</h1>
-
-    `;
-  showCard.addEventListener("click", () => {
-    window.location.href = `./pages/show.html?id=${show.id}&type=${show.media_type}`;
-  });
-  return showCard;
-};
-
-// Create skeleton card
-const renderSkeletonCard = () => {
-  const skeletonCard = document.createElement("div");
-  skeletonCard.className = "show-card skeleton card";
-  skeletonCard.innerHTML = `
-    <div class="show-poster-container skeleton-poster">
-      <div class="skeleton-shimmer"></div>
-    </div>
-    <div class="show-title-container">
-      <div class="skeleton-title"></div>
-    </div>
-    <div class="skeleton-type"></div>
-  `;
-  return skeletonCard;
-};
-
-// Cache for preloaded images
 const imageCache = new Map();
 
 // Preload image function
@@ -96,200 +50,237 @@ const preloadShowImages = async (shows) => {
   await Promise.allSettled(imagePromises);
 };
 
-const renderCurrentTrending = async (show) => {
-  const currentTrending = document.createElement("div");
-  const info = await fetchShowInfo(show.id, show.media_type).catch((error) => {
-    console.error("Error fetching show info:", error);
+const dialogCloseButton = document.getElementById("dialog-close-button");
+// Disclaimer functionality
+function closeDisclaimer() {
+  const dialogWrapper = document.getElementById("dialog-wrapper");
+  dialogWrapper.classList.add("hidden");
+}
+
+dialogCloseButton.addEventListener("click", closeDisclaimer);
+
+await fetchTrendingShows().then(async (shows) => {
+  // Start preloading images in background (non-blocking)
+  preloadShowImages(shows).then(() => {
+    console.log("All images preloaded!");
   });
-  console.log("Current trending show:", info);
-  currentTrending.className = "current-trending-container";
-  currentTrending.style.backgroundImage = `url('${CONFIG.getBackdrop(
-    show.backdrop_path
-  )}')`;
-  currentTrending.style.backgroundColor = "rgba(0, 0, 0, 0.6)";
-  currentTrending.style.backgroundBlendMode = "overlay";
-  currentTrending.innerHTML = `
-    <div class="current-trending">
-      <div class="current-trending-info-container">
-        ${
-          info.results.logo
-            ? `<img src="${CONFIG.getLogo(info.results.logo)}" alt="${
-                show.title || show.name
-              }" class="current-trending-logo"/>`
-            : `<h1>${show.title || show.name}</h1>`
-        }
-        <div class="current-trending-badges">
-          <p class="current-trending-overview">${show.overview}</p>
-          <div class="current-trending-media-info">
-            <span class="current-trending-media-type" style="${
-              show.media_type === "movie"
-                ? "background: var(--accent);"
-                : "background: var(--secondary);"
-            }">${show.media_type === "movie" ? "Movie" : "Series"}
-            </span>
-            ${
-              show.media_type === "movie"
-                ? `<span class="current-trending-runtime">${Math.floor(
-                    info.results.runtime / 60
-                  )}h ${info.results.runtime % 60}m</span>`
-                : `<span class="current-trending-seasons">${
-                    info.results.number_of_seasons > 1
-                      ? info.results.number_of_seasons + " Seasons"
-                      : "1 Season"
-                  }</span><span class="is-ongoing">${
-                    info.results.in_production ? "Ongoing" : "Completed"
-                  }</span>`
-            }
-            <span class="current-trending-year">${new Date(
-              show.first_air_date || show.release_date
-            ).getFullYear()}</span>
-            <span class="current-trending-votes">⭐ ${info.results.vote_average.toFixed(
-              1
-            )} (${info.results.vote_count} votes)</span>
-          </div>
-        </div> 
-      </div>
+
+  let trendingList = document.querySelector(".trending-list");
+  let thumbnailContainer = document.querySelector(".thumbnail");
+  const prevButton = document.getElementById("prev");
+  const nextButton = document.getElementById("next");
+  const thumbnail = document.querySelector(".thumbnail");
+
+  let currentIndex = 0; // Track current active item
+  let processedShows = []; // Track shows that have been processed
+
+  // Function to update active states
+  const updateActiveStates = (newIndex) => {
+    // Remove active class from all items
+    document
+      .querySelectorAll(".trending-item")
+      .forEach((item) => item.classList.remove("active"));
+    document
+      .querySelectorAll(".thumbnail-item")
+      .forEach((item) => item.classList.remove("active"));
+
+    // Add active class to current items
+    const activeMainItem = document.querySelector(
+      `.trending-item[data-index="${newIndex}"]`
+    );
+    const activeThumbnailItem = document.querySelector(
+      `.thumbnail-item[data-index="${newIndex}"]`
+    );
+
+    if (activeMainItem) activeMainItem.classList.add("active");
+    if (activeThumbnailItem) activeThumbnailItem.classList.add("active");
+
+    currentIndex = newIndex;
+  };
+
+  // Process shows asynchronously
+  const processShow = async (show, index) => {
+    const info = await fetchShowInfo(show.id, show.media_type).catch(
+      (error) => {
+        console.error("Error fetching show info:", error);
+        return null;
+      }
+    );
+    const handleClick = (id, type) => {
+      console.log("Navigating to show:", id, type);
+      if (type === "tv") {
+        // For TV shows, default to season 1, episode 1
+        window.location.href = `./pages/show.html?id=${id}&type=${type}&season=1&episode=1`;
+      } else {
+        // For movies, no season/episode needed
+        window.location.href = `./pages/show.html?id=${id}&type=${type}`;
+      }
+    };
+
+    // Create trending item
+    const trendingItem = document.createElement("div");
+    trendingItem.className = `trending-item ${index === 0 ? "active" : ""}`;
+    trendingItem.setAttribute("data-index", index);
+    trendingItem.innerHTML = `
+      <img src="${CONFIG.getBackdrop(show.backdrop_path)}" alt="${
+      show.title || show.name
+    }" class="trending-backdrop"/>
+    <!-- Content -->
+    <div class="trending-info">
+      <!-- Backdrop -->
+      <img src="${CONFIG.getLogo(info?.results?.logo || "")}" alt="${
+      show.title || show.name
+    }" class="trending-logo"/>
+      <p class="trending-overview">${show.overview}</p>
+       <!-- CTA Buttons -->
+    <div class="action-buttons">
+      <button class="watch-button" id="trending-watch-btn"><i class="fa fa-play"></i>Watch</button>
+      <button class="later-button" id="trending-info-btn"><i class="fa fa-clock"></i>Watch Later</button>
     </div>
-  `;
-  // -----------------
-  //      CLASSES
-  // -----------------
-  // current-trending-container
-  // current-trending
-  // current-trending-logo
-  // current-trending-overview
-  // current-trending-media-info
-  // current-trending-media-type
-  // current-trending-runtime
-  // current-trending-seasons
-  // current-trending-year
-  // current-trending-votes
+    </div>
+    `;
 
-  return currentTrending;
-};
-
-await fetchTrendingShows()
-  .then(async (shows) => {
-    // Preload all images first
-    console.log("Preloading images...");
-    await preloadShowImages(shows);
-    console.log("Images preloaded!");
-
-    let index = 0;
-    let trendingContainer = document.getElementById("trending-movies");
-    let currentTrending = await renderCurrentTrending(shows[index]);
-    trendingContainer.appendChild(currentTrending);
-
-    setInterval(async () => {
-      index = (index + 1) % shows.length;
-      const nextTrending = await renderCurrentTrending(shows[index]);
-
-      // Add smooth transition
-      nextTrending.style.opacity = "0";
-      trendingContainer.appendChild(nextTrending);
-
-      // Fade out current, fade in next
-      const oldTrending = trendingContainer.firstElementChild;
-
-      // Animate transition
-      oldTrending.style.transition = "opacity 0.8s ease-in-out";
-      nextTrending.style.transition = "opacity 0.8s ease-in-out";
-
-      oldTrending.style.opacity = "0";
-      nextTrending.style.opacity = "1";
-
-      // Remove old element after transition
-      setTimeout(() => {
-        if (oldTrending && oldTrending.parentNode) {
-          oldTrending.remove();
-        }
-      }, 0);
-    }, 2000);
-  })
-  .catch((error) => {
-    console.error("Error fetching trending shows:", error);
-    const trendingContainer = document.getElementById("trending-movies");
-    trendingContainer.innerHTML =
-      "<p>Failed to load trending shows. Please try again later.</p>";
-  });
-
-// Show skeleton cards initially
-const showSkeletonCards = () => {
-  const movieContainer = document.getElementById("popular-movies-list");
-  // Clear existing content
-  movieContainer.innerHTML = "";
-
-  // Add 8 skeleton cards
-  for (let i = 0; i < 20; i++) {
-    const skeletonCard = renderSkeletonCard();
-    movieContainer.appendChild(skeletonCard);
-  }
-};
-
-// Remove skeleton cards
-const removeSkeletonCards = () => {
-  const movieContainer = document.getElementById("popular-movies-list");
-  movieContainer.innerHTML = "";
-};
-
-// Show skeleton cards immediately
-showSkeletonCards();
-
-await fetchTrendingShows()
-  .then((shows) => {
-    removeSkeletonCards();
-    shows.forEach((show) => {
-      const movieContainer = document.getElementById("popular-movies-list");
-
-      const movieCard = renderShowCard(show);
-      movieContainer.appendChild(movieCard);
+    const watchButton = trendingItem.querySelector("#trending-watch-btn");
+    watchButton.addEventListener("click", () => {
+      handleClick(show.id, show.media_type);
     });
-  })
-  .catch((error) => {
-    console.error("Error fetching popular movies:", error);
-    const movieContainer = document.getElementById("popular-movies-list");
-    movieContainer.innerHTML =
-      "<p>Failed to load popular movies. Please try again later.</p>";
+
+    // Create thumbnail item
+    const thumbnailItem = document.createElement("div");
+    thumbnailItem.className = `thumbnail-item ${index === 0 ? "active" : ""}`;
+    thumbnailItem.setAttribute("data-index", index);
+    thumbnailItem.innerHTML = `
+      <img src="${CONFIG.getImage(show.poster_path)}" alt="${
+      show.title || show.name
+    }" class="thumbnail-poster"/>
+    <div class="thumbnail-info">
+      <p class="thumbnail-title">${show.title || show.name}</p>
+    </div>
+    `; // Add click functionality to thumbnail
+    thumbnailItem.addEventListener("click", () => {
+      const index = parseInt(thumbnailItem.dataset.index);
+      updateActiveStates(index);
+      // Scroll thumbnail horizontally without affecting page scroll
+      const thumbnailContainer = thumbnailItem.parentElement;
+      const itemLeft = thumbnailItem.offsetLeft;
+      const containerWidth = thumbnailContainer.clientWidth;
+      const itemWidth = thumbnailItem.offsetWidth;
+      const scrollLeft = itemLeft - containerWidth / 2 + itemWidth / 2;
+
+      thumbnailContainer.scrollTo({
+        left: Math.max(0, scrollLeft),
+        behavior: "smooth",
+      });
+    });
+
+    // Insert in correct position
+    const existingTrendingItems = trendingList.children;
+    const existingThumbnailItems = thumbnailContainer.children;
+
+    if (index < existingTrendingItems.length) {
+      trendingList.insertBefore(trendingItem, existingTrendingItems[index]);
+      thumbnailContainer.insertBefore(
+        thumbnailItem,
+        existingThumbnailItems[index]
+      );
+    } else {
+      trendingList.appendChild(trendingItem);
+      thumbnailContainer.appendChild(thumbnailItem);
+    }
+
+    processedShows[index] = show;
+  };
+
+  // Process first show immediately for instant display
+  await processShow(shows[0], 0);
+
+  // Process remaining shows in background
+  shows.slice(1).forEach((show, i) => {
+    processShow(show, i + 1);
+  });
+  // Next button event listener
+  nextButton.addEventListener("click", () => {
+    const newIndex = (currentIndex + 1) % shows.length;
+    updateActiveStates(newIndex);
+
+    // Scroll to center the active thumbnail
+    const activeThumbnail = document.querySelector(
+      `.thumbnail-item[data-index="${newIndex}"]`
+    );
+    if (activeThumbnail) {
+      const thumbnailContainer = activeThumbnail.parentElement;
+      const itemLeft = activeThumbnail.offsetLeft;
+      const containerWidth = thumbnailContainer.clientWidth;
+      const itemWidth = activeThumbnail.offsetWidth;
+      const scrollLeft = itemLeft - containerWidth / 2 + itemWidth / 2;
+
+      thumbnailContainer.scrollTo({
+        left: Math.max(0, scrollLeft),
+        behavior: "smooth",
+      });
+    }
   });
 
-document.getElementById("popular-movies-list").addEventListener(
-  "wheel",
-  (event) => {
-    event.preventDefault();
+  // Previous button event listener
+  prevButton.addEventListener("click", () => {
+    const newIndex = (currentIndex - 1 + shows.length) % shows.length;
+    updateActiveStates(newIndex);
 
-    event.currentTarget.scrollLeft += event.deltaY * 10;
-  },
-  { passive: false }
-);
+    // Scroll to center the active thumbnail
+    const activeThumbnail = document.querySelector(
+      `.thumbnail-item[data-index="${newIndex}"]`
+    );
+    if (activeThumbnail) {
+      const thumbnailContainer = activeThumbnail.parentElement;
+      const itemLeft = activeThumbnail.offsetLeft;
+      const containerWidth = thumbnailContainer.clientWidth;
+      const itemWidth = activeThumbnail.offsetWidth;
+      const scrollLeft = itemLeft - containerWidth / 2 + itemWidth / 2;
 
-document.querySelector(".btn-swipe-r").addEventListener("click", () => {
-  if (window.innerWidth > 600 && window.innerWidth <= 900) {
-    document.getElementById("popular-movies-list").scrollLeft += 500;
-  } else if (window.innerWidth > 900 && window.innerWidth <= 1200) {
-    document.getElementById("popular-movies-list").scrollLeft += 700;
-  } else if (window.innerWidth > 1200 && window.innerWidth <= 1450) {
-    document.getElementById("popular-movies-list").scrollLeft += 900;
-  } else if (window.innerWidth > 1450) {
-    document.getElementById("popular-movies-list").scrollLeft += 2000;
-  }
+      thumbnailContainer.scrollTo({
+        left: Math.max(0, scrollLeft),
+        behavior: "smooth",
+      });
+    }
+  });
+
+  thumbnail.addEventListener(
+    "wheel",
+    (event) => {
+      event.preventDefault();
+      thumbnail.scrollLeft += event.deltaY;
+    },
+    { passive: false }
+  );
 });
 
-document.querySelector(".btn-swipe-l").addEventListener("click", () => {
-  if (window.innerWidth > 600 && window.innerWidth <= 900) {
-    document.getElementById("popular-movies-list").scrollLeft -= 500;
-  } else if (window.innerWidth > 900 && window.innerWidth <= 1200) {
-    document.getElementById("popular-movies-list").scrollLeft -= 700;
-  } else if (window.innerWidth > 1200 && window.innerWidth <= 1450) {
-    document.getElementById("popular-movies-list").scrollLeft -= 900;
-  } else if (window.innerWidth > 1450) {
-    document.getElementById("popular-movies-list").scrollLeft -= 2000;
+// Search functionality
+const searchInput = document.getElementById("search-input");
+const searchButton = document.getElementById("search-button-pc");
+const mobileSearchButton = document.getElementById("search-button-mobile");
+let isSearchVisible = false;
+
+const performSearch = () => {
+  const query = searchInput.value.trim();
+  if (query) {
+    window.location.href = `./pages/search.html?query=${encodeURIComponent(
+      query
+    )}`;
+  }
+};
+searchButton.addEventListener("click", performSearch);
+mobileSearchButton.addEventListener("click", () => {
+  if (window.innerWidth > 678) {
+    return; // Do nothing on larger screens
+  }
+  searchInput.style.display = "block";
+  isSearchVisible = !isSearchVisible;
+  if (!isSearchVisible) {
+    searchInput.style.display = "none";
   }
 });
-
-// Hide the buttons if there is nothing to scroll
-
-// const movieContainer = document.getElementById("popular-movies-list");
-// if (movieContainer.scrollWidth <= movieContainer.clientWidth) {
-//   document.querySelector(".btn-swipe-r").style.display = "none";
-//   document.querySelector(".btn-swipe-l").style.display = "none";
-// }
+searchInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    performSearch();
+  }
+});
