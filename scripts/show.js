@@ -2,7 +2,6 @@ import { fetchShowInfo } from "./utils/fetchAPI.js";
 import { CONFIG } from "./config.js";
 
 const dialogCloseButton = document.getElementById("dialog-close-button");
-// Disclaimer functionality
 function closeDisclaimer() {
   const dialogWrapper = document.getElementById("dialog-wrapper");
   dialogWrapper.classList.add("hidden");
@@ -10,7 +9,6 @@ function closeDisclaimer() {
 
 dialogCloseButton.addEventListener("click", closeDisclaimer);
 
-// Get parameters from URL
 const urlParams = new URLSearchParams(window.location.search);
 const showId = urlParams.get("id");
 const showType = urlParams.get("type");
@@ -20,26 +18,22 @@ const episode = urlParams.get("episode") || 1;
 let embedUrl = "";
 let showData = null;
 
-// Fetch show information
 const loadShowData = async () => {
   try {
     const response = await fetchShowInfo(showId, showType);
     showData = response.results;
     return showData;
   } catch (error) {
-    console.error("Error fetching show data:", error);
     return null;
   }
 };
 
-// Generate embed URL
 if (showType === "movie") {
   embedUrl = `https://vidsrc.xyz/embed/movie?tmdb=${showId}&ds_lang=en`;
 } else {
   embedUrl = `https://vidsrc.xyz/embed/tv?tmdb=${showId}&season=${season}&episode=${episode}&ds_lang=en`;
 }
 
-// Create skeleton episode cards
 const createSkeletonEpisodeCards = (episodeCount = 12) => {
   let skeletonCards = "";
   for (let i = 1; i <= episodeCount; i++) {
@@ -53,12 +47,10 @@ const createSkeletonEpisodeCards = (episodeCount = 12) => {
   return skeletonCards;
 };
 
-// Create the player interface
 const createPlayerInterface = async () => {
   const movieDetailsContainer = document.getElementById("movie-player-wrapper");
   const isMovie = showType === "movie";
 
-  // Show initial interface with loading state
   movieDetailsContainer.className = "player-container";
   movieDetailsContainer.innerHTML = `
     <div class="player-header">
@@ -81,39 +73,60 @@ const createPlayerInterface = async () => {
         loading="lazy"
       ></iframe>
     </div>
-    
-    ${!isMovie ? createSkeletonEpisodesSection() : ""}
+      ${
+        !isMovie ? createSkeletonEpisodesSection() : ""
+      }    ${createSkeletonRecommendationsSection()}
   `;
 
-  // Load data and update the interface
   try {
     const data = await loadShowData();
     const showTitle = data?.title || data?.name || "Unknown Title";
 
-    // Update the header title
     const playerTitle = document.querySelector(".player-title");
     playerTitle.innerHTML = `
-      <i class="fas fa-play-circle"></i>
-      Now watching: ${showTitle}
+      <i class="fas fa-play-circle"></i>      Now watching: ${showTitle}
       ${!isMovie ? ` - S${season}E${episode}` : ""}
-    `; // Update episodes section if it's a TV show
+    `;
     if (!isMovie && data) {
       const episodesSection = document.getElementById("episodes-section");
       const loadingIndicator = document.querySelector(".episodes-loading");
-
       if (episodesSection) {
-        // Hide loading indicator
         if (loadingIndicator) {
           loadingIndicator.style.display = "none";
         }
 
-        // Replace the content
         episodesSection.innerHTML = createEpisodeCards(data);
       }
     }
+    const recommendationsSection = document.getElementById(
+      "recommendations-section"
+    );
+    const recommendationsLoading = document.querySelector(
+      ".recommendations-loading"
+    );
+    if (recommendationsSection && data?.recommendations) {
+      if (recommendationsLoading) {
+        recommendationsLoading.style.display = "none";
+      }
+
+      recommendationsSection.innerHTML = createRecommendationsSection(
+        data.recommendations
+      );
+    } else if (recommendationsSection) {
+      if (recommendationsLoading) {
+        recommendationsLoading.style.display = "none";
+      }
+
+      recommendationsSection.innerHTML = `
+        <div class="recommendations-header">
+          <h3><i class="fas fa-lightbulb"></i> You might also like</h3>
+        </div>
+        <div class="no-recommendations">
+          <p><i class="fas fa-info-circle"></i> No recommendations available for this title</p>
+        </div>
+      `;
+    }
   } catch (error) {
-    console.error("Error loading show data:", error);
-    // Update with error state
     const playerTitle = document.querySelector(".player-title");
     playerTitle.innerHTML = `
       <i class="fas fa-exclamation-triangle"></i>
@@ -122,9 +135,7 @@ const createPlayerInterface = async () => {
     if (!isMovie) {
       const episodesSection = document.getElementById("episodes-section");
       const loadingIndicator = document.querySelector(".episodes-loading");
-
       if (episodesSection) {
-        // Hide loading indicator
         if (loadingIndicator) {
           loadingIndicator.style.display = "none";
         }
@@ -132,17 +143,139 @@ const createPlayerInterface = async () => {
         episodesSection.innerHTML = `
           <div class="season-selector">
             <h3>Episodes</h3>
-          </div>
-          <div class="episodes-grid">
+          </div>          <div class="episodes-grid">
             <p class="no-episodes">Failed to load episode information</p>
           </div>
         `;
       }
     }
+
+    const recommendationsSection = document.getElementById(
+      "recommendations-section"
+    );
+    const recommendationsLoading = document.querySelector(
+      ".recommendations-loading"
+    );
+
+    if (recommendationsSection) {
+      if (recommendationsLoading) {
+        recommendationsLoading.style.display = "none";
+      }
+
+      recommendationsSection.innerHTML = `
+        <div class="recommendations-header">
+          <h3><i class="fas fa-lightbulb"></i> You might also like</h3>
+        </div>
+        <div class="recommendations-error">
+          <p><i class="fas fa-exclamation-triangle"></i> Failed to load recommendations</p>
+        </div>
+      `;
+    }
   }
 };
 
-// Create skeleton episodes section
+const createSkeletonRecommendationsSection = () => {
+  return `
+    <div class="recommendations-section" id="recommendations-section">
+      <div class="recommendations-header">
+        <h3><i class="fas fa-lightbulb"></i> You might also like</h3>
+      </div>
+      
+      <div class="recommendations-loading">
+        <i class="fas fa-spinner"></i>
+        Loading recommendations...
+      </div>
+      
+      <div class="recommendations-scroll-container">
+        <div class="recommendations-grid">
+          ${createSkeletonRecommendationCards(6)}
+        </div>
+      </div>
+    </div>
+  `;
+};
+
+const createSkeletonRecommendationCards = (count = 6) => {
+  let skeletonCards = "";
+  for (let i = 1; i <= count; i++) {
+    skeletonCards += `
+      <div class="skeleton-recommendation-card">
+        <div class="skeleton-recommendation-poster"></div>
+        <div class="skeleton-recommendation-info">
+          <div class="skeleton-recommendation-title"></div>
+          <div class="skeleton-recommendation-year"></div>
+        </div>
+      </div>
+    `;
+  }
+  return skeletonCards;
+};
+
+const createRecommendationsSection = (recommendations) => {
+  if (!recommendations || recommendations.length === 0) {
+    return `
+      <div class="recommendations-header">
+        <h3><i class="fas fa-lightbulb"></i> You might also like</h3>
+      </div>
+      <div class="no-recommendations">
+        <p><i class="fas fa-info-circle"></i> No recommendations available for this title</p>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="recommendations-header">
+      <h3><i class="fas fa-lightbulb"></i> You might also like</h3>
+    </div>
+    <div class="recommendations-scroll-container">
+      <div class="recommendations-grid" id="recommendations-grid">
+        ${recommendations.slice(0, 12).map(createRecommendationCard).join("")}
+      </div>
+    </div>
+  `;
+};
+
+const createRecommendationCard = (item) => {
+  const title = item.title || item.name || "Unknown Title";
+  const year = item.release_date
+    ? new Date(item.release_date).getFullYear()
+    : item.first_air_date
+    ? new Date(item.first_air_date).getFullYear()
+    : "";
+  const poster = item.poster_path
+    ? `${CONFIG.API_CONFIG.POSTER_URL}${item.poster_path}`
+    : "../assets/images/logo.png";
+  const mediaType = item.media_type || (item.title ? "movie" : "tv");
+  const rating = item.vote_average ? item.vote_average.toFixed(1) : "N/A";
+
+  return `
+    <div class="recommendation-card" onclick="openRecommendation(${
+      item.id
+    }, '${mediaType}')">
+      <div class="recommendation-poster-container">
+        <img src="${poster}" alt="${title}" class="recommendation-poster" loading="lazy" />
+        <div class="recommendation-type">${mediaType.toUpperCase()}</div>
+        <div class="recommendation-overlay">
+          <i class="fas fa-play"></i>
+        </div>
+      </div>
+      <div class="recommendation-info">
+        <div class="recommendation-title">${title}</div>
+        <div class="recommendation-details">
+          ${year ? `<span class="recommendation-year">${year}</span>` : ""}
+          <span class="recommendation-rating">
+            <i class="fas fa-star"></i> ${rating}
+          </span>
+        </div>
+      </div>
+    </div>
+  `;
+};
+
+window.openRecommendation = (id, type) => {
+  window.location.href = `show.html?id=${id}&type=${type}`;
+};
+
 const createSkeletonEpisodesSection = () => {
   return `
     <div class="episodes-section" id="episodes-section">
@@ -162,7 +295,6 @@ const createSkeletonEpisodesSection = () => {
   `;
 };
 
-// Create episode cards for TV series
 const createEpisodeCards = (data) => {
   if (!data.seasons || data.seasons.length === 0) {
     return `
@@ -203,7 +335,6 @@ const createEpisodeCards = (data) => {
   `;
 };
 
-// Generate episode cards
 const generateEpisodeCards = (seasonData) => {
   if (!seasonData || !seasonData.episode_count) {
     return '<p class="no-episodes">No episodes available for this season</p>';
@@ -225,17 +356,14 @@ const generateEpisodeCards = (seasonData) => {
   return episodeCards;
 };
 
-// Season change handler
 window.changeSeason = (newSeason) => {
   window.location.href = `show.html?id=${showId}&type=${showType}&season=${newSeason}&episode=1`;
 };
 
-// Episode change handler
 window.changeEpisode = (newEpisode) => {
   window.location.href = `show.html?id=${showId}&type=${showType}&season=${season}&episode=${newEpisode}`;
 };
 
-// Search functionality for show page
 const searchInput = document.getElementById("search-input");
 const searchButton = document.getElementById("search-button-pc");
 const mobileSearchButton = document.getElementById("search-button-mobile");
@@ -272,5 +400,4 @@ searchInput.addEventListener("keydown", (event) => {
   }
 });
 
-// Initialize the player
 createPlayerInterface();

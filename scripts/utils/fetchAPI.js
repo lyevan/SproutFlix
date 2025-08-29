@@ -3,7 +3,6 @@ import { CONFIG } from "../config.js";
 export const fetchTrendingShows = async () => {
   const response = await fetch(`${CONFIG.BASE_URL}/discover/trending`);
   const data = await response.json();
-  console.log("Fetching trending shows from:", data);
   return data.results;
 };
 
@@ -20,7 +19,6 @@ export const fetchShowInfo = async (id, media_type) => {
     throw new Error(`Error fetching show info: ${response.statusText}`);
   }
   const data = await response.json();
-  // console.log("Fetching show info for ID:", id, data);
   return data;
 };
 
@@ -45,6 +43,31 @@ export const searchShows = async (query, page = 1) => {
     throw new Error(`Error searching shows: ${response.statusText}`);
   }
   const data = await response.json();
-  console.log("Search results:", data);
+  return data;
+};
+
+export const fetchMoodRecommendation = async (mood) => {
+  if (!mood) {
+    throw new Error("Mood is required for recommendation.");
+  }
+
+  const response = await fetch(
+    `${CONFIG.BASE_URL}/gemini/mood-recommendation-id`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ mood: mood.trim() }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Error getting mood recommendation: ${response.statusText}`
+    );
+  }
+
+  const data = await response.json();
   return data;
 };

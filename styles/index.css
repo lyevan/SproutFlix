@@ -125,7 +125,7 @@ body {
 
 nav {
   width: 100%;
-  padding: 8px;
+  padding: 8px 16px;
   height: 4rem;
   display: flex;
   gap: 1rem;
@@ -138,19 +138,18 @@ nav {
   top: 0;
   z-index: 99999;
 
-  a {
-    flex: 1;
-  }
-
   .logo {
+    flex: 0 0 auto;
     display: flex;
     align-items: center;
     gap: var(--sm);
     text-decoration: none;
     color: var(--primary-content);
+
     img {
       max-height: 50px;
     }
+
     h1 {
       font-family: var(--font-heading);
       font-size: 2rem;
@@ -158,13 +157,21 @@ nav {
     }
   }
 
+  .nav-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex: 1;
+    justify-content: end;
+    max-width: 800px;
+  }
+
   .search-container {
     position: relative;
     display: flex;
     align-items: center;
-
     input {
-      padding: 8px 12px;
+      padding: 8px 40px 8px 12px;
       border-radius: 4px;
       border: none;
       outline: none;
@@ -176,14 +183,17 @@ nav {
         outline: 2px solid var(--primary);
       }
     }
+
     button {
       position: absolute;
-      right: 4px;
+      right: 8px;
       background: none;
       border: none;
       cursor: pointer;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       color: var(--primary);
+      padding: 4px;
+
       &:hover {
         color: var(--primary-hover);
       }
@@ -195,6 +205,62 @@ nav {
     .mobile-search {
       display: none;
     }
+  }
+
+  .mood-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    input {
+      padding: 8px 40px 8px 12px;
+      border-radius: 4px;
+      border: 1px solid#9f5da4;
+      outline: none;
+      font-size: 1rem;
+      width: 350px;
+      background: rgba(159, 93, 164, 0.3);
+      color: var(--primary-content);
+      transition: all 0.3s ease;
+
+      &::placeholder {
+        color: #9f5da4;
+        opacity: 0.9;
+      }
+
+      &:focus {
+        outline: 2px solid #9f5da4;
+        background: rgba(159, 93, 164, 0.3);
+        border-color: #9f5da4;
+      }
+    }
+
+    button {
+      position: absolute;
+      right: 8px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: #9f5da4;
+      transition: all 0.3s ease;
+      padding: 4px;
+
+      &:hover {
+        color: #9f5da4;
+        transform: scale(1.1);
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+    }
+  }
+
+  .nav-spacer {
+    flex: 0 0 auto;
+    width: 120px;
   }
 
   .nav-links {
@@ -657,6 +723,478 @@ dialog .dialog-close:active {
   }
 }
 
+/* Mobile responsive styles for show page */
+@media screen and (max-width: 768px) {
+  .player-container {
+    margin: var(--sm) auto;
+    padding: 0 var(--sm);
+  }
+
+  .player-header {
+    flex-direction: column;
+    gap: var(--md);
+    padding: var(--md);
+    text-align: center;
+  }
+
+  .player-title {
+    font-size: 1.1rem;
+    text-align: center;
+  }
+
+  .back-button {
+    align-self: center;
+    padding: var(--xs) var(--md);
+    font-size: 0.9rem;
+  }
+
+  .episodes-section {
+    margin-top: var(--lg);
+    padding: var(--md);
+  }
+
+  .season-selector {
+    flex-direction: column;
+    gap: var(--sm);
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .season-selector h3 {
+    font-size: 1.1rem;
+  }
+
+  .season-selector select {
+    width: 100%;
+    text-align: center;
+  }
+
+  .episodes-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--sm);
+  }
+
+  .episode-card {
+    padding: var(--md);
+  }
+
+  .episode-number {
+    font-size: 1rem;
+  }
+
+  .episode-title {
+    font-size: 0.75rem;
+  }
+
+  .skeleton-episode-card {
+    padding: var(--md);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .player-header {
+    padding: var(--sm);
+  }
+
+  .player-title {
+    font-size: 1rem;
+    gap: var(--xs);
+  }
+
+  .back-button {
+    padding: var(--xs) var(--sm);
+    font-size: 0.8rem;
+  }
+
+  .episodes-section {
+    padding: var(--sm);
+  }
+
+  .season-selector h3 {
+    font-size: 1rem;
+  }
+
+  .episodes-grid {
+    grid-template-columns: 1fr;
+    gap: var(--xs);
+  }
+
+  .episode-card {
+    padding: var(--sm);
+  }
+
+  .episode-number {
+    font-size: 0.9rem;
+    margin-bottom: var(--xs);
+  }
+
+  .episode-title {
+    font-size: 0.7rem;
+  }
+
+  .skeleton-episode-card {
+    padding: var(--sm);
+  }
+
+  .skeleton-episode-number {
+    height: 1rem;
+    width: 1.5rem;
+  }
+  .skeleton-episode-title {
+    height: 0.75rem;
+  }
+}
+
+/* Recommendations Section */
+.recommendations-section {
+  margin-top: var(--2xl);
+  padding: var(--xl);
+  background: linear-gradient(
+    135deg,
+    var(--background-2) 0%,
+    var(--background-3) 100%
+  );
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.recommendations-header {
+  margin-bottom: var(--xl);
+}
+
+.recommendations-header h3 {
+  font-family: var(--font-heading);
+  color: var(--primary);
+  font-size: 1.25rem;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sm);
+}
+
+.recommendations-loading {
+  text-align: center;
+  color: var(--primary);
+  padding: var(--xl);
+  font-family: var(--font-heading);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sm);
+}
+
+.recommendations-loading i {
+  animation: fa-spin 1s linear infinite;
+}
+
+.recommendations-scroll-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: var(--sm);
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) transparent;
+}
+
+.recommendations-scroll-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.recommendations-scroll-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.recommendations-scroll-container::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 3px;
+}
+
+.recommendations-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary);
+}
+
+.recommendations-grid {
+  display: flex;
+  gap: var(--lg);
+  padding: var(--xs) 0;
+  min-width: min-content;
+}
+
+.recommendation-card {
+  flex: 0 0 200px;
+  background: var(--background-1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.recommendation-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--primary);
+  box-shadow: 0 8px 25px rgba(133, 173, 0, 0.2);
+}
+
+.recommendation-poster-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2/3;
+  overflow: hidden;
+}
+
+.recommendation-poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.recommendation-card:hover .recommendation-poster {
+  transform: scale(1.05);
+}
+
+.recommendation-type {
+  position: absolute;
+  top: var(--xs);
+  right: var(--xs);
+  background: var(--primary);
+  color: var(--primary-content);
+  padding: var(--xs) var(--sm);
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+.recommendation-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.recommendation-card:hover .recommendation-overlay {
+  opacity: 1;
+}
+
+.recommendation-overlay i {
+  color: var(--primary);
+  font-size: 2rem;
+}
+
+.recommendation-info {
+  padding: var(--md);
+}
+
+.recommendation-title {
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: var(--xs);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--primary-content);
+}
+
+.recommendation-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--primary-content);
+  opacity: 0.8;
+}
+
+.recommendation-year {
+  font-family: var(--font-body);
+}
+
+.recommendation-rating {
+  display: flex;
+  align-items: center;
+  gap: var(--xs);
+}
+
+.recommendation-rating i {
+  color: #ffd700;
+  font-size: 0.7rem;
+}
+
+.no-recommendations,
+.recommendations-error {
+  text-align: center;
+  color: var(--primary-content);
+  opacity: 0.7;
+  font-style: italic;
+  padding: var(--xl);
+  background: var(--background-1);
+  border-radius: 8px;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+}
+
+.recommendations-error {
+  opacity: 0.8;
+  color: var(--secondary);
+}
+
+.no-recommendations i,
+.recommendations-error i {
+  margin-right: var(--xs);
+  font-size: 1rem;
+}
+
+/* Skeleton recommendation cards */
+.skeleton-recommendation-card {
+  flex: 0 0 200px;
+  background: var(--background-1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+.skeleton-recommendation-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(133, 173, 0, 0.1),
+    transparent
+  );
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  z-index: 1;
+}
+
+.skeleton-recommendation-poster {
+  width: 100%;
+  aspect-ratio: 2/3;
+  background: rgba(255, 255, 255, 0.1);
+  animation: skeleton-pulse 1.5s ease-in-out infinite alternate;
+}
+
+.skeleton-recommendation-info {
+  padding: var(--md);
+}
+
+.skeleton-recommendation-title {
+  height: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  margin-bottom: var(--sm);
+  animation: skeleton-pulse 1.5s ease-in-out infinite alternate;
+  animation-delay: 0.1s;
+}
+
+.skeleton-recommendation-year {
+  height: 0.8rem;
+  width: 60%;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  animation: skeleton-pulse 1.5s ease-in-out infinite alternate;
+  animation-delay: 0.2s;
+}
+
+/* Responsive recommendations */
+@media screen and (max-width: 768px) {
+  .recommendations-section {
+    margin-top: var(--lg);
+    padding: var(--md);
+  }
+
+  .recommendations-header h3 {
+    font-size: 1.1rem;
+  }
+
+  .recommendation-card,
+  .skeleton-recommendation-card {
+    flex: 0 0 150px;
+  }
+
+  .recommendation-info {
+    padding: var(--sm);
+  }
+
+  .recommendation-title {
+    font-size: 0.8rem;
+  }
+
+  .recommendation-details {
+    font-size: 0.7rem;
+  }
+
+  .recommendation-type {
+    font-size: 0.6rem;
+    padding: var(--xs);
+  }
+
+  .recommendation-overlay i {
+    font-size: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .recommendations-section {
+    padding: var(--sm);
+  }
+
+  .recommendations-header h3 {
+    font-size: 1rem;
+  }
+
+  .recommendation-card,
+  .skeleton-recommendation-card {
+    flex: 0 0 120px;
+  }
+
+  .recommendation-info {
+    padding: var(--xs);
+  }
+
+  .recommendation-title {
+    font-size: 0.75rem;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+  }
+
+  .recommendation-details {
+    font-size: 0.65rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--xs);
+  }
+
+  .recommendation-overlay i {
+    font-size: 1.2rem;
+  }
+}
+
+/* Hide scroll hint on mobile to avoid clutter */
+@media screen and (max-width: 678px) {
+  .scroll-down-hint {
+    display: none;
+  }
+}
+
 /* Search Page Styles */
 .search-page-container {
   max-width: 1400px;
@@ -924,23 +1462,90 @@ dialog .dialog-close:active {
 
 @media screen and (max-width: 678px) {
   nav {
+    padding: 8px 12px;
+
+    .logo h1 {
+      font-size: 1.5rem;
+    }
+
+    .nav-controls {
+      gap: 0.5rem;
+      max-width: none;
+    }
+
     .search-container {
       flex: 1;
+
       input {
         display: none;
         position: absolute;
         top: 50px;
         right: 10px;
+        left: 10px;
+        width: auto;
+        z-index: 1000;
+        background: var(--background-1);
+        border: 1px solid var(--primary);
       }
+
       .pc-search {
         display: none;
       }
+
       .mobile-search {
         display: block;
       }
     }
-  }
 
+    .mood-container {
+      display: flex;
+
+      input {
+        width: 180px;
+        font-size: 0.85rem;
+        padding: 6px 28px 6px 8px;
+
+        &::placeholder {
+          font-size: 0.8rem;
+        }
+      }
+
+      button {
+        right: 6px;
+        font-size: 0.9rem;
+      }
+    }
+    .nav-spacer {
+      display: none;
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  nav {
+    .logo h1 {
+      font-size: 1.3rem;
+    }
+
+    .mood-container {
+      input {
+        width: 140px;
+        font-size: 0.8rem;
+        padding: 5px 24px 5px 6px;
+
+        &::placeholder {
+          font-size: 0.75rem;
+        }
+      }
+
+      button {
+        font-size: 0.85rem;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 678px) {
   dialog {
     width: 95%;
     max-width: none;

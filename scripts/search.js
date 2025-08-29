@@ -1,8 +1,6 @@
-// filepath: c:\Users\Ivan Lester Elmido\Downloads\Basics\scripts\search.js
 import { searchShows } from "./utils/fetchAPI.js";
 import { CONFIG } from "./config.js";
 
-// Get search elements
 const searchInput = document.getElementById("search-input");
 const searchButton = document.getElementById("search-button-pc");
 const mobileSearchButton = document.getElementById("search-button-mobile");
@@ -15,32 +13,26 @@ const loadMoreBtn = document.getElementById("load-more-btn");
 const searchTitle = document.getElementById("search-title");
 const searchSubtitle = document.getElementById("search-subtitle");
 
-// Search state
 let currentQuery = "";
 let currentPage = 1;
 let totalPages = 1;
 let isLoading = false;
 
-// Get query from URL parameters
 const urlParams = new URLSearchParams(window.location.search);
 const initialQuery = urlParams.get("query");
 
-// Initialize search functionality
 const initializeSearch = () => {
-  // Set up search input value and perform initial search if query exists
   if (initialQuery) {
     searchInput.value = initialQuery;
     performSearch(initialQuery, 1, true);
   }
 
-  // Add event listeners
   searchButton.addEventListener("click", handleSearchClick);
   mobileSearchButton.addEventListener("click", handleMobileSearchClick);
   searchInput.addEventListener("keydown", handleSearchKeydown);
   loadMoreBtn.addEventListener("click", handleLoadMore);
 };
 
-// Handle search button click
 const handleSearchClick = () => {
   const query = searchInput.value.trim();
   if (query) {
@@ -49,7 +41,6 @@ const handleSearchClick = () => {
   }
 };
 
-// Handle mobile search button click
 const handleMobileSearchClick = () => {
   if (window.innerWidth > 678) {
     handleSearchClick();
@@ -64,21 +55,18 @@ const handleMobileSearchClick = () => {
   }
 };
 
-// Handle search input keydown
 const handleSearchKeydown = (event) => {
   if (event.key === "Enter") {
     handleSearchClick();
   }
 };
 
-// Handle load more button click
 const handleLoadMore = () => {
   if (currentQuery && currentPage < totalPages && !isLoading) {
     performSearch(currentQuery, currentPage + 1, false);
   }
 };
 
-// Update URL with search query
 const updateURL = (query) => {
   const newURL = `${window.location.pathname}?query=${encodeURIComponent(
     query
@@ -86,28 +74,24 @@ const updateURL = (query) => {
   window.history.pushState({}, "", newURL);
 };
 
-// Show loading state
 const showLoading = () => {
   hideAllStates();
   searchLoading.classList.remove("hidden");
   isLoading = true;
 };
 
-// Show error state
 const showError = () => {
   hideAllStates();
   searchError.classList.remove("hidden");
   isLoading = false;
 };
 
-// Show no results state
 const showNoResults = () => {
   hideAllStates();
   noResults.classList.remove("hidden");
   isLoading = false;
 };
 
-// Hide all state elements
 const hideAllStates = () => {
   searchLoading.classList.add("hidden");
   searchError.classList.add("hidden");
@@ -115,7 +99,6 @@ const hideAllStates = () => {
   isLoading = false;
 };
 
-// Create skeleton cards
 const createSkeletonCards = (count = 20) => {
   let skeletonHTML = "";
   for (let i = 0; i < count; i++) {
@@ -132,7 +115,6 @@ const createSkeletonCards = (count = 20) => {
   return skeletonHTML;
 };
 
-// Create search card HTML
 const createSearchCard = (show) => {
   const title = show.title || show.name || "Unknown Title";
   const year =
@@ -171,17 +153,13 @@ const createSearchCard = (show) => {
   `;
 };
 
-// Perform search
 const performSearch = async (query, page = 1, clearResults = true) => {
   if (isLoading) return;
-
   currentQuery = query;
 
-  // Update header
   searchTitle.textContent = `Search Results for "${query}"`;
   searchSubtitle.textContent = `Showing results for your search`;
 
-  // Show loading state if clearing results or show skeleton cards
   if (clearResults) {
     searchResults.innerHTML = createSkeletonCards(20);
     hideAllStates();
@@ -191,29 +169,22 @@ const performSearch = async (query, page = 1, clearResults = true) => {
   }
 
   showLoading();
-
   try {
     const data = await searchShows(query, page);
 
-    // Hide loading state
     hideAllStates();
-
     if (data.results && data.results.length > 0) {
-      // Clear results if this is a new search
       if (clearResults) {
         searchResults.innerHTML = "";
       }
 
-      // Add new results
       data.results.forEach((show) => {
         searchResults.innerHTML += createSearchCard(show);
       });
 
-      // Update pagination info
       currentPage = page;
       totalPages = data.total_pages || 1;
 
-      // Show/hide load more button
       if (currentPage < totalPages) {
         loadMoreContainer.classList.remove("hidden");
         loadMoreBtn.innerHTML = '<i class="fas fa-plus"></i> Load More';
@@ -222,7 +193,6 @@ const performSearch = async (query, page = 1, clearResults = true) => {
         loadMoreContainer.classList.add("hidden");
       }
     } else {
-      // No results found
       if (clearResults) {
         searchResults.innerHTML = "";
         showNoResults();
@@ -230,8 +200,6 @@ const performSearch = async (query, page = 1, clearResults = true) => {
       loadMoreContainer.classList.add("hidden");
     }
   } catch (error) {
-    console.error("Search error:", error);
-
     if (clearResults) {
       searchResults.innerHTML = "";
       showError();
@@ -244,8 +212,6 @@ const performSearch = async (query, page = 1, clearResults = true) => {
   }
 };
 
-// Initialize when DOM is loaded
 document.addEventListener("DOMContentLoaded", initializeSearch);
 
-// Initialize search functionality
 initializeSearch();

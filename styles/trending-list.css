@@ -25,7 +25,13 @@
   position: absolute;
   left: 0;
   bottom: 0;
-  background-image: linear-gradient(to top, #000 20%, transparent);
+  background-image: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.7) 30%,
+    rgba(0, 0, 0, 0.4) 60%,
+    transparent 100%
+  );
 }
 
 .trending-movies .trending-list .trending-info {
@@ -52,6 +58,21 @@
   z-index: 10;
 }
 
+.trending-overview {
+  color: var(--primary-content);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: var(--lg) 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .action-buttons {
   display: flex;
   gap: 20px;
@@ -61,25 +82,41 @@
 .watch-button {
   background-color: var(--primary);
   border: none;
-  color: #191919;
+  color: var(--primary-content);
   text-transform: uppercase;
   font-weight: 600;
-  width: 120px;
+  width: 50%;
   height: 40px;
   border-radius: 8px;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.watch-button:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(133, 173, 0, 0.3);
 }
 
 .later-button {
-  background-color: var(--foreground);
+  display: none;
+  background-color: transparent;
   border: 2px solid var(--primary);
-  color: #191919;
+  color: var(--primary-content);
   text-transform: uppercase;
   font-weight: 600;
   width: 120px;
   height: 40px;
   border-radius: 8px;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.later-button:hover {
+  background-color: var(--primary);
+  color: var(--primary-content);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(133, 173, 0, 0.3);
 }
 
 @keyframes showContent {
@@ -124,26 +161,40 @@
   top: 30%;
   right: 50px;
   z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sm);
 }
 
 .arrows button {
-  width: 40px;
-  height: 40px;
-  background-color: transparent;
+  width: 50px;
+  height: 50px;
+  background-color: rgba(0, 0, 0, 0.7);
   border: 2px solid var(--primary);
-  border-radius: 8px;
+  border-radius: 50%;
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+
   i {
     color: var(--primary);
+    font-size: 1.2rem;
   }
 }
 
 .arrows button:hover {
   background-color: var(--primary);
+  border-color: var(--primary);
+  transform: scale(1.1);
+  box-shadow: 0 4px 15px rgba(133, 173, 0, 0.4);
+
   i {
     color: var(--primary-content);
   }
+}
+
+.arrows button:active {
+  transform: scale(0.95);
 }
 
 .thumbnail {
@@ -166,21 +217,36 @@
 
 .thumbnail .thumbnail-item {
   width: 150px;
-  filter: brightness(0.3) grayscale(1);
-  transition: 0.5s;
+  filter: brightness(0.5) grayscale(0.8);
+  transition: all 0.5s ease;
   flex-shrink: 0;
   cursor: pointer;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid transparent;
 }
 
 .thumbnail .thumbnail-item .thumbnail-poster {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 6px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.thumbnail .thumbnail-item:hover {
+  filter: brightness(0.8) grayscale(0.3);
+  border-color: var(--primary);
+}
+
+.thumbnail .thumbnail-item:hover .thumbnail-poster {
+  transform: scale(1.05);
 }
 
 .thumbnail .thumbnail-item.active {
   filter: brightness(1) grayscale(0);
+  border-color: var(--primary);
+  box-shadow: 0 0 15px rgba(133, 173, 0, 0.5);
 }
 
 .thumbnail .thumbnail-item .thumbnail-info {
@@ -195,43 +261,78 @@
   width: 100%;
 }
 
-.watch-button,
-.later-button {
-  flex: 1;
-}
+
 
 /* If there is no available logo then style the alt text */
 .trending-movies .trending-list .trending-info .trending-logo[alt]:empty {
   content: attr(alt);
-  color: var(--foreground);
-  font-size: xxx-large;
+  color: var(--primary-content);
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 @media screen and (max-width: 678px) {
   .arrows {
     top: 48%;
   }
+
   .trending-movies .trending-list .trending-info {
-    top: 10%;
+    top: 15%;
     left: 50%;
     transform: translateX(-50%);
     font-size: smaller;
     align-items: center;
+    text-align: center;
+    width: 90%;
+    max-width: none;
+  }
+
+  .trending-overview {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: var(--md) 0;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
   }
 
   .action-buttons {
     width: 100%;
+    gap: var(--md);
+    margin-top: var(--md);
   }
 
   .watch-button,
   .later-button {
     flex: 1;
     height: 35px;
-    font-size: smaller;
+    font-size: 0.8rem;
+    font-weight: 700;
   }
 
   .trending-movies .trending-list .trending-info .trending-logo {
-    width: 180px;
+    width: 160px;
+    max-height: 120px;
+  }
+
+  .thumbnail {
+    bottom: 30px;
+    height: 180px;
+    padding: 0 var(--lg);
+  }
+
+  .thumbnail .thumbnail-item {
+    width: 120px;
   }
 }
 

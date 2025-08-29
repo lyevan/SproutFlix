@@ -3,6 +3,10 @@ export const CONFIG = {
   IMG_BASE_URL: "https://image.tmdb.org/t/p/w500",
   HIGH_IMG_BASE_URL: "https://image.tmdb.org/t/p/original",
 
+  API_CONFIG: {
+    POSTER_URL: "https://image.tmdb.org/t/p/w500",
+  },
+
   getImage: (path) => {
     return `${CONFIG.IMG_BASE_URL}${path}`;
   },

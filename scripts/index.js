@@ -1,9 +1,12 @@
-import { fetchTrendingShows, fetchShowInfo } from "./utils/fetchAPI.js";
+import {
+  fetchTrendingShows,
+  fetchShowInfo,
+  fetchMoodRecommendation,
+} from "./utils/fetchAPI.js";
 import { CONFIG } from "./config.js";
 
 const imageCache = new Map();
 
-// Preload image function
 const preloadImage = (src) => {
   return new Promise((resolve, reject) => {
     if (imageCache.has(src)) {
@@ -21,37 +24,31 @@ const preloadImage = (src) => {
   });
 };
 
-// Preload all images for shows
 const preloadShowImages = async (shows) => {
   const imagePromises = [];
 
   for (const show of shows) {
-    // Preload backdrop
     if (show.backdrop_path) {
       imagePromises.push(preloadImage(CONFIG.getBackdrop(show.backdrop_path)));
     }
 
-    // Preload poster
     if (show.poster_path) {
       imagePromises.push(preloadImage(CONFIG.getImage(show.poster_path)));
     }
 
-    // Preload logo (fetch show info first)
     try {
       const info = await fetchShowInfo(show.id, show.media_type);
       if (info?.results?.logo) {
         imagePromises.push(preloadImage(CONFIG.getLogo(info.results.logo)));
       }
-    } catch (error) {
-      console.warn(`Could not preload logo for ${show.title || show.name}`);
-    }
+    } catch (error) {}
   }
 
   await Promise.allSettled(imagePromises);
 };
 
 const dialogCloseButton = document.getElementById("dialog-close-button");
-// Disclaimer functionality
+
 function closeDisclaimer() {
   const dialogWrapper = document.getElementById("dialog-wrapper");
   dialogWrapper.classList.add("hidden");
@@ -60,10 +57,7 @@ function closeDisclaimer() {
 dialogCloseButton.addEventListener("click", closeDisclaimer);
 
 await fetchTrendingShows().then(async (shows) => {
-  // Start preloading images in background (non-blocking)
-  preloadShowImages(shows).then(() => {
-    console.log("All images preloaded!");
-  });
+  preloadShowImages(shows);
 
   let trendingList = document.querySelector(".trending-list");
   let thumbnailContainer = document.querySelector(".thumbnail");
@@ -71,12 +65,10 @@ await fetchTrendingShows().then(async (shows) => {
   const nextButton = document.getElementById("next");
   const thumbnail = document.querySelector(".thumbnail");
 
-  let currentIndex = 0; // Track current active item
-  let processedShows = []; // Track shows that have been processed
+  let currentIndex = 0;
+  let processedShows = [];
 
-  // Function to update active states
   const updateActiveStates = (newIndex) => {
-    // Remove active class from all items
     document
       .querySelectorAll(".trending-item")
       .forEach((item) => item.classList.remove("active"));
@@ -84,7 +76,6 @@ await fetchTrendingShows().then(async (shows) => {
       .querySelectorAll(".thumbnail-item")
       .forEach((item) => item.classList.remove("active"));
 
-    // Add active class to current items
     const activeMainItem = document.querySelector(
       `.trending-item[data-index="${newIndex}"]`
     );
@@ -97,27 +88,19 @@ await fetchTrendingShows().then(async (shows) => {
 
     currentIndex = newIndex;
   };
-
-  // Process shows asynchronously
   const processShow = async (show, index) => {
     const info = await fetchShowInfo(show.id, show.media_type).catch(
-      (error) => {
-        console.error("Error fetching show info:", error);
-        return null;
-      }
+      () => null
     );
+
     const handleClick = (id, type) => {
-      console.log("Navigating to show:", id, type);
       if (type === "tv") {
-        // For TV shows, default to season 1, episode 1
         window.location.href = `./pages/show.html?id=${id}&type=${type}&season=1&episode=1`;
       } else {
-        // For movies, no season/episode needed
         window.location.href = `./pages/show.html?id=${id}&type=${type}`;
       }
     };
 
-    // Create trending item
     const trendingItem = document.createElement("div");
     trendingItem.className = `trending-item ${index === 0 ? "active" : ""}`;
     trendingItem.setAttribute("data-index", index);
@@ -125,14 +108,11 @@ await fetchTrendingShows().then(async (shows) => {
       <img src="${CONFIG.getBackdrop(show.backdrop_path)}" alt="${
       show.title || show.name
     }" class="trending-backdrop"/>
-    <!-- Content -->
     <div class="trending-info">
-      <!-- Backdrop -->
       <img src="${CONFIG.getLogo(info?.results?.logo || "")}" alt="${
       show.title || show.name
     }" class="trending-logo"/>
       <p class="trending-overview">${show.overview}</p>
-       <!-- CTA Buttons -->
     <div class="action-buttons">
       <button class="watch-button" id="trending-watch-btn"><i class="fa fa-play"></i>Watch</button>
       <button class="later-button" id="trending-info-btn"><i class="fa fa-clock"></i>Watch Later</button>
@@ -145,7 +125,6 @@ await fetchTrendingShows().then(async (shows) => {
       handleClick(show.id, show.media_type);
     });
 
-    // Create thumbnail item
     const thumbnailItem = document.createElement("div");
     thumbnailItem.className = `thumbnail-item ${index === 0 ? "active" : ""}`;
     thumbnailItem.setAttribute("data-index", index);
@@ -156,11 +135,10 @@ await fetchTrendingShows().then(async (shows) => {
     <div class="thumbnail-info">
       <p class="thumbnail-title">${show.title || show.name}</p>
     </div>
-    `; // Add click functionality to thumbnail
+    `;
     thumbnailItem.addEventListener("click", () => {
       const index = parseInt(thumbnailItem.dataset.index);
       updateActiveStates(index);
-      // Scroll thumbnail horizontally without affecting page scroll
       const thumbnailContainer = thumbnailItem.parentElement;
       const itemLeft = thumbnailItem.offsetLeft;
       const containerWidth = thumbnailContainer.clientWidth;
@@ -173,7 +151,6 @@ await fetchTrendingShows().then(async (shows) => {
       });
     });
 
-    // Insert in correct position
     const existingTrendingItems = trendingList.children;
     const existingThumbnailItems = thumbnailContainer.children;
 
@@ -191,19 +168,15 @@ await fetchTrendingShows().then(async (shows) => {
     processedShows[index] = show;
   };
 
-  // Process first show immediately for instant display
   await processShow(shows[0], 0);
 
-  // Process remaining shows in background
   shows.slice(1).forEach((show, i) => {
     processShow(show, i + 1);
   });
-  // Next button event listener
   nextButton.addEventListener("click", () => {
     const newIndex = (currentIndex + 1) % shows.length;
     updateActiveStates(newIndex);
 
-    // Scroll to center the active thumbnail
     const activeThumbnail = document.querySelector(
       `.thumbnail-item[data-index="${newIndex}"]`
     );
@@ -221,12 +194,10 @@ await fetchTrendingShows().then(async (shows) => {
     }
   });
 
-  // Previous button event listener
   prevButton.addEventListener("click", () => {
     const newIndex = (currentIndex - 1 + shows.length) % shows.length;
     updateActiveStates(newIndex);
 
-    // Scroll to center the active thumbnail
     const activeThumbnail = document.querySelector(
       `.thumbnail-item[data-index="${newIndex}"]`
     );
@@ -254,7 +225,6 @@ await fetchTrendingShows().then(async (shows) => {
   );
 });
 
-// Search functionality
 const searchInput = document.getElementById("search-input");
 const searchButton = document.getElementById("search-button-pc");
 const mobileSearchButton = document.getElementById("search-button-mobile");
@@ -268,10 +238,12 @@ const performSearch = () => {
     )}`;
   }
 };
+
 searchButton.addEventListener("click", performSearch);
+
 mobileSearchButton.addEventListener("click", () => {
   if (window.innerWidth > 678) {
-    return; // Do nothing on larger screens
+    return;
   }
   searchInput.style.display = "block";
   isSearchVisible = !isSearchVisible;
@@ -279,8 +251,51 @@ mobileSearchButton.addEventListener("click", () => {
     searchInput.style.display = "none";
   }
 });
+
 searchInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     performSearch();
+  }
+});
+
+const moodInput = document.getElementById("mood-input");
+const moodButton = document.getElementById("mood-button");
+
+const performMoodRecommendation = async () => {
+  const mood = moodInput.value.trim();
+  if (!mood) {
+    return;
+  }
+
+  moodButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  moodButton.disabled = true;
+
+  try {
+    const recommendation = await fetchMoodRecommendation(mood);
+
+    if (
+      recommendation.success &&
+      recommendation.movie &&
+      recommendation.movie.id
+    ) {
+      window.location.href = `./pages/show.html?id=${recommendation.movie.id}&type=movie`;
+    } else {
+      alert(
+        "Sorry, couldn't find a movie recommendation for your mood. Please try a different description."
+      );
+    }
+  } catch (error) {
+    alert("Error getting mood recommendation. Please try again.");
+  } finally {
+    moodButton.innerHTML = '<i class="fas fa-magic"></i>';
+    moodButton.disabled = false;
+  }
+};
+
+moodButton.addEventListener("click", performMoodRecommendation);
+
+moodInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    performMoodRecommendation();
   }
 });

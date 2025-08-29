@@ -48,7 +48,11 @@
 
           <strong style="color: lightcoral">
             Playing videos contain <span style="color: crimson">ADS</span> as
-            these videos are embedded only from a public source.
+            these videos are embedded only from a public source. If you
+            <span style="color: #85ad00">don't want to see ads</span>, please
+            consider using
+            <span style="color: orange"><u>Brave Browser</u></span
+            >.
           </strong>
           <div class="dialog-actions">
             <button class="dialog-close" id="dialog-close-button">
@@ -64,19 +68,35 @@
         <h1 id="logo-title">SproutFlix</h1>
       </a>
 
-      <div class="search-container">
-        <input
-          type="text"
-          id="search-input"
-          placeholder="Search for movies or TV shows..."
-        />
-        <button id="search-button-pc" class="pc-search">
-          <i class="fas fa-search"></i>
-        </button>
-        <button id="search-button-mobile" class="mobile-search">
-          <i class="fas fa-search"></i>
-        </button>
+      <div class="nav-spacer"></div>
+      <div class="nav-controls">
+        <div class="search-container">
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Search for movies or TV shows..."
+          />
+          <button id="search-button-pc" class="pc-search">
+            <i class="fas fa-search"></i>
+          </button>
+          <button id="search-button-mobile" class="mobile-search">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+
+        <div class="mood-container">
+          <input
+            type="text"
+            id="mood-input"
+            placeholder="AI Mood recommendations..."
+          />
+          <button id="mood-button" class="mood-search">
+            <i class="fas fa-magic"></i>
+          </button>
+        </div>
       </div>
+
+      
     </nav>
     <main>
       <section

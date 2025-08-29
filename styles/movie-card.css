@@ -1,6 +1,6 @@
 .show-card {
-  box-shadow: 1px 0px 1px rgba(0, 0, 0, 0.5);
-  outline: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   box-sizing: border-box;
   border-radius: 8px;
   width: 120px;
@@ -15,12 +15,19 @@
   text-decoration: none;
   color: var(--primary-content);
   cursor: pointer;
-  transition: transform 1s ease-in-out;
-  background: #000;
+  transition: all 0.3s ease;
+  background: var(--background-1);
+
+  &:hover,
+  &:focus {
+    transform: translateY(-4px);
+    border-color: var(--primary);
+    box-shadow: 0 8px 25px rgba(133, 173, 0, 0.2);
+  }
 
   &:hover img,
   &:focus img {
-    transform: scale(1);
+    transform: scale(1.05);
   }
 
   img {
@@ -75,10 +82,8 @@
     transform: scale(1.05);
     transition: transform 0.3s ease-in-out;
   }
-
   .show-title-container {
     opacity: 0;
-
     position: absolute;
     bottom: 0;
     z-index: 2;
@@ -88,13 +93,21 @@
     border-bottom-right-radius: 8px;
     display: flex;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.7);
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.9) 0%,
+      rgba(0, 0, 0, 0.7) 50%,
+      transparent 100%
+    );
     align-items: center;
+    transition: opacity 0.3s ease;
   }
   h2 {
-    font-family: "Inter", sans-serif;
+    font-family: var(--font-heading);
     padding: 0px 8px;
     font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--primary-content);
     display: -webkit-box;
     line-clamp: 3;
     -webkit-line-clamp: 3;
@@ -102,16 +115,22 @@
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: 1.2;
+    text-align: center;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
   }
   .show-type {
-    font-weight: 400;
+    background: var(--primary);
+    color: var(--primary-content);
+    font-weight: 600;
     border-radius: 4px;
     position: absolute;
-    padding: 2px 4px;
-    top: 0;
-    right: 10%;
+    padding: 4px 8px;
+    top: 8px;
+    right: 8px;
     font-size: 0.6rem;
-    margin-top: 0.5rem;
+    text-transform: uppercase;
+    z-index: 3;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
   }
 }
 
