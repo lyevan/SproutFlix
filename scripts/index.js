@@ -230,6 +230,11 @@ const searchButton = document.getElementById("search-button-pc");
 const mobileSearchButton = document.getElementById("search-button-mobile");
 let isSearchVisible = false;
 
+const moodInput = document.getElementById("mood-input");
+const moodButton = document.getElementById("mood-button-pc");
+const moodButtonMobile = document.getElementById("mood-button-mobile");
+let isMoodVisible = false;
+
 const performSearch = () => {
   const query = searchInput.value.trim();
   if (query) {
@@ -245,6 +250,10 @@ mobileSearchButton.addEventListener("click", () => {
   if (window.innerWidth > 678) {
     return;
   }
+  if (isMoodVisible) {
+    isMoodVisible = false;
+    moodInput.style.display = "none";
+  }
   searchInput.style.display = "block";
   isSearchVisible = !isSearchVisible;
   if (!isSearchVisible) {
@@ -257,9 +266,6 @@ searchInput.addEventListener("keydown", (event) => {
     performSearch();
   }
 });
-
-const moodInput = document.getElementById("mood-input");
-const moodButton = document.getElementById("mood-button");
 
 const performMoodRecommendation = async () => {
   const mood = moodInput.value.trim();
@@ -293,7 +299,20 @@ const performMoodRecommendation = async () => {
 };
 
 moodButton.addEventListener("click", performMoodRecommendation);
-
+moodButtonMobile.addEventListener("click", () => {
+  if (window.innerWidth > 678) {
+    return;
+  }
+  if (isSearchVisible) {
+    isSearchVisible = false;
+    searchInput.style.display = "none";
+  }
+  moodInput.style.display = "block";
+  isMoodVisible = !isMoodVisible;
+  if (!isMoodVisible) {
+    moodInput.style.display = "none";
+  }
+});
 moodInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     performMoodRecommendation();

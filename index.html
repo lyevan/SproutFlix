@@ -22,7 +22,7 @@
     <title>SproutFlix</title>
   </head>
   <body>
-    <div class="dialog-wrapper" id="dialog-wrapper">
+    <div class="dialog-wrapper" id="dialog-wrapper" style="overflow-y: auto">
       <dialog open>
         <div>
           <h1>
@@ -44,6 +44,13 @@
           <p>
             Also note that some content may be rated for mature audiences.
             Viewer discretion is advised.
+          </p>
+
+          <p>
+            Please understand that
+            <b style="color: crimson">not all movies are available</b> and the
+            developer do not have any control over the availability of certain
+            movies.
           </p>
 
           <strong style="color: lightcoral">
@@ -90,13 +97,14 @@
             id="mood-input"
             placeholder="AI Mood recommendations..."
           />
-          <button id="mood-button" class="mood-search">
-            <i class="fas fa-magic"></i>
+          <button id="mood-button-pc" class="mood-search-pc">
+            <i class="fas fa-wand-magic-sparkles"></i>
+          </button>
+          <button id="mood-button-mobile" class="mood-search-mobile">
+            <i class="fas fa-wand-magic-sparkles"></i>
           </button>
         </div>
       </div>
-
-      
     </nav>
     <main>
       <section

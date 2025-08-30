@@ -171,12 +171,13 @@ nav {
     display: flex;
     align-items: center;
     input {
+      display: block;
       padding: 8px 40px 8px 12px;
       border-radius: 4px;
       border: none;
       outline: none;
       font-size: 1rem;
-      width: 300px;
+      width: 20rem;
       transition: border-color 0.3s ease;
 
       &:focus {
@@ -186,6 +187,8 @@ nav {
 
     button {
       position: absolute;
+      width: 32px;
+      height: 32px;
       right: 8px;
       background: none;
       border: none;
@@ -217,7 +220,7 @@ nav {
       border: 1px solid#9f5da4;
       outline: none;
       font-size: 1rem;
-      width: 350px;
+      width: 20rem;
       background: rgba(159, 93, 164, 0.3);
       color: var(--primary-content);
       transition: all 0.3s ease;
@@ -236,6 +239,9 @@ nav {
 
     button {
       position: absolute;
+      width: 32px;
+      height: 32px;
+
       right: 8px;
       background: none;
       border: none;
@@ -255,6 +261,12 @@ nav {
         cursor: not-allowed;
         transform: none;
       }
+    }
+    .mood-search-pc {
+      display: block;
+    }
+    .mood-search-mobile {
+      display: none;
     }
   }
 
@@ -917,7 +929,7 @@ dialog .dialog-close:active {
   display: flex;
   gap: var(--lg);
   padding: var(--xs) 0;
-  min-width: min-content;
+  min-width: max-content;
 }
 
 .recommendation-card {
@@ -1459,8 +1471,57 @@ dialog .dialog-close:active {
     font-size: 0.7rem;
   }
 }
+@media screen and (max-width: 1043px) {
+  nav {
+    .search-container {
+      input {
+        width: 230px;
+        &::placeholder {
+          font-size: 0.8rem;
+        }
+      }
+    }
+    .mood-container {
+      input {
+        width: 230px;
+        &::placeholder {
+          font-size: 0.8rem;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 804px) {
+  nav {
+    .search-container {
+      input {
+        width: 150px;
+        &::placeholder {
+          font-size: 0.8rem;
+        }
+      }
+    }
+    .mood-container {
+      input {
+        width: 150px;
+        &::placeholder {
+          font-size: 0.8rem;
+        }
+      }
+    }
+  }
+}
 
 @media screen and (max-width: 678px) {
+  .dialog-wrapper {
+    p,
+    strong,
+    span,
+    b {
+      font-size: 0.8rem;
+    }
+  }
   nav {
     padding: 8px 12px;
 
@@ -1476,6 +1537,10 @@ dialog .dialog-close:active {
     .search-container {
       flex: 1;
 
+      button {
+        right: 30px;
+      }
+
       input {
         display: none;
         position: absolute;
@@ -1486,6 +1551,10 @@ dialog .dialog-close:active {
         z-index: 1000;
         background: var(--background-1);
         border: 1px solid var(--primary);
+
+        &::placeholder {
+          font-size: 0.8rem;
+        }
       }
 
       .pc-search {
@@ -1501,9 +1570,15 @@ dialog .dialog-close:active {
       display: flex;
 
       input {
-        width: 180px;
-        font-size: 0.85rem;
-        padding: 6px 28px 6px 8px;
+        display: none;
+        position: absolute;
+        top: 50px;
+        right: 10px;
+
+        width: auto;
+        z-index: 1000;
+        background: var(--background-1);
+        border: 1px solid #9f5da4;
 
         &::placeholder {
           font-size: 0.8rem;
@@ -1513,6 +1588,13 @@ dialog .dialog-close:active {
       button {
         right: 6px;
         font-size: 0.9rem;
+      }
+
+      .mood-search-pc {
+        display: none;
+      }
+      .mood-search-mobile {
+        display: block;
       }
     }
     .nav-spacer {
@@ -1529,9 +1611,15 @@ dialog .dialog-close:active {
 
     .mood-container {
       input {
-        width: 140px;
-        font-size: 0.8rem;
-        padding: 5px 24px 5px 6px;
+        display: none;
+        position: absolute;
+        top: 50px;
+        right: 10px;
+        left: 10px;
+        width: auto;
+        z-index: 1000;
+        background: var(--background-1);
+        border: 1px solid var(--primary);
 
         &::placeholder {
           font-size: 0.75rem;
@@ -1540,6 +1628,13 @@ dialog .dialog-close:active {
 
       button {
         font-size: 0.85rem;
+      }
+
+      .mood-search-pc {
+        display: none;
+      }
+      .mood-search-mobile {
+        display: block;
       }
     }
   }
