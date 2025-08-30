@@ -46,6 +46,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 /* Buttons */
@@ -1535,8 +1536,6 @@ dialog .dialog-close:active {
     }
 
     .search-container {
-      flex: 1;
-
       button {
         right: 30px;
       }
@@ -1573,9 +1572,9 @@ dialog .dialog-close:active {
         display: none;
         position: absolute;
         top: 50px;
-        right: 10px;
+        right: 50%;
 
-        width: auto;
+        width: 100px;
         z-index: 1000;
         background: var(--background-1);
         border: 1px solid #9f5da4;
@@ -1609,14 +1608,16 @@ dialog .dialog-close:active {
       font-size: 1.3rem;
     }
 
+    .search-container,
     .mood-container {
+      position: initial;
+
       input {
         display: none;
         position: absolute;
-        top: 50px;
+        top: 4.5rem;
         right: 10px;
-        left: 10px;
-        width: auto;
+        width: 200px;
         z-index: 1000;
         background: var(--background-1);
         border: 1px solid var(--primary);
@@ -1626,15 +1627,28 @@ dialog .dialog-close:active {
         }
       }
 
-      button {
-        font-size: 0.85rem;
+      .pc-search {
+        display: none;
       }
 
+      .mobile-search {
+        display: block;
+      }
       .mood-search-pc {
         display: none;
       }
       .mood-search-mobile {
         display: block;
+      }
+    }
+
+    .search-container {
+      input {
+        position: relative;
+        top: 3.5rem;
+      }
+      button {
+        right: 30px;
       }
     }
   }
