@@ -1576,8 +1576,6 @@ dialog .dialog-close:active {
 
         width: 100px;
         z-index: 1000;
-        background: var(--background-1);
-        border: 1px solid #9f5da4;
 
         &::placeholder {
           font-size: 0.8rem;
@@ -1619,9 +1617,7 @@ dialog .dialog-close:active {
         right: 10px;
         width: 200px;
         z-index: 1000;
-        background: var(--background-1);
-        border: 1px solid var(--primary);
-
+        color: white;
         &::placeholder {
           font-size: 0.75rem;
         }
