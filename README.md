@@ -21,3 +21,7 @@ A modern movie/TV streaming website with AI-powered mood recommendations.
 ## Live Demo
 
 sproutflix.vercel.app
+
+## Hackathon Submission Link
+
+https://devpost.com/software/sproutflix
