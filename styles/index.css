@@ -1602,7 +1602,7 @@ dialog .dialog-close:active {
   }
 }
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 678px) {
   nav {
     .logo h1 {
       font-size: 1.3rem;
@@ -1643,10 +1643,6 @@ dialog .dialog-close:active {
     }
 
     .search-container {
-      input {
-        position: relative;
-        top: 3.5rem;
-      }
       button {
         right: 30px;
       }
